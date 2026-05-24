@@ -532,19 +532,30 @@
     document.getElementById('shareBtn').addEventListener('click', async () => {
       const type = document.getElementById('rBadge').textContent;
       const c = COFFEES[type];
-      const text = `저는 ${type} — ${c.brand}의 "${c.name}"이 어울린대요! ☕`;
       const url = window.location.href;
-      try {
-        if (navigator.share) {
-          await navigator.share({ title: '당신은 어떤 커피인가요?', text, url });
-        } else {
-          await navigator.clipboard.writeText(`${text} ${url}`);
-          const btn = document.getElementById('shareBtn');
-          const orig = btn.textContent;
-          btn.textContent = '복사됨!';
-          setTimeout(() => (btn.textContent = orig), 1500);
+      const shareText = `저는 ${type} — ${c.brand}의 "${c.name}"이 어울린대요! ☕\n${url}`;
+
+      const flashCopied = async () => {
+        try { await navigator.clipboard.writeText(shareText); } catch (_) { return false; }
+        const btn = document.getElementById('shareBtn');
+        const orig = btn.textContent;
+        btn.textContent = '클립보드에 복사됨!';
+        setTimeout(() => (btn.textContent = orig), 1700);
+        return true;
+      };
+
+      // macOS의 Messages 등 일부 공유 대상은 text+url을 따로 받으면 무시함.
+      // 모든 정보를 단일 text 필드에 합쳐 보내면 가장 안정적임.
+      if (navigator.share) {
+        try {
+          await navigator.share({ text: shareText });
+          return;
+        } catch (e) {
+          if (e && e.name === 'AbortError') return; // 사용자가 닫음
+          // 공유에 실패하면 클립보드 복사로 폴백
         }
-      } catch (e) { /* 사용자가 취소함 */ }
+      }
+      await flashCopied();
     });
 
     // 배경에 떠다니는 커피콩 장식
