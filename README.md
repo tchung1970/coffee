@@ -18,6 +18,7 @@ MBTI 4개 축(E/I, S/N, T/F, J/P)에 대해 각각 2문항씩, 총 **8문항**�
 - 단일 `index.html` (외부 라이브러리·빌드 과정 없음)
 - 모바일 친화적 반응형 레이아웃
 - 한국어 UI, 한글 가독성을 위한 시스템 폰트 스택과 `word-break: keep-all`
+- `og.png` (1200×630) — 카카오톡·X·Threads 등에서 링크를 공유할 때 보이는 Open Graph 미리보기 이미지
 
 ## 추천 목록
 
@@ -69,7 +70,11 @@ python3 -m http.server 8000
 
 ```bash
 scp index.html root@<서버>:/var/www/html/coffee/index.html
+# og.png를 바꿨다면 함께 올리기
+scp og.png root@<서버>:/var/www/html/coffee/og.png
 ```
+
+> `og.png`를 갱신하면 Facebook/Threads/카카오톡의 OG 캐시는 한동안 옛 이미지를 보여줄 수 있어요. [Meta Sharing Debugger](https://developers.facebook.com/tools/debug/)에서 다시 스크랩하거나, `og:image` URL에 `?v=2` 같은 캐시 버스터를 붙이면 즉시 갱신됩니다.
 
 ## 기술 스택
 
