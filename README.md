@@ -25,7 +25,7 @@ MBTI 4개 축(E/I, S/N, T/F, J/P)에 대해 각각 2문항씩, 총 **8문항**�
 | INTP | 핸드드립 | Fritz Coffee Company (프릳츠) |
 | ENTJ | 도피오 | illy (일리) |
 | ENTP | 코르타도 | Paul Bassett (폴 바셋) |
-| INFJ | 말차 라떼 | % Arabica (% 아라비카) |
+| INFJ | 말차 라떼 | % Arabica (퍼센트 아라비카) |
 | INFP | 라벤더 라떼 | Tous les Jours (뚜레쥬르) |
 | ENFJ | 카라멜 마키아토 | Coffee Bean & Tea Leaf (커피빈) |
 | ENFP | 딸기 라떼 | A Twosome Place (투썸플레이스) |
