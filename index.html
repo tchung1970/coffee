@@ -175,13 +175,35 @@
       border-radius: 999px;
     }
 
+    .q-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.8rem;
+      margin-bottom: 0.6rem;
+    }
+
     .q-number {
       font-size: 0.85rem;
       letter-spacing: 0.12em;
       color: var(--accent);
       font-weight: 600;
-      margin-bottom: 0.6rem;
     }
+
+    .back-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: rgba(61, 40, 23, 0.6);
+      padding: 0.3rem 0.55rem;
+      border-radius: 999px;
+      transition: color 0.15s ease, background 0.15s ease;
+    }
+    .back-btn:hover { color: var(--espresso); background: var(--cream); }
+    .back-btn[hidden] { display: none; }
 
     .q-text {
       font-size: 1.35rem;
@@ -390,7 +412,10 @@
       <!-- Question -->
       <section class="screen" id="screenQuestion">
         <div class="progress"><div class="progress-fill" id="progressFill"></div></div>
-        <div class="q-number" id="qNumber">8문항 중 1번</div>
+        <div class="q-header">
+          <div class="q-number" id="qNumber">8문항 중 1번</div>
+          <button class="back-btn" id="backBtn" type="button" hidden>← 이전</button>
+        </div>
         <div class="q-text" id="qText"></div>
         <div class="options" id="qOptions"></div>
       </section>
@@ -593,13 +618,14 @@
       card.style.animation = '';
     }
 
-    let state = { i: 0, scores: { E:0, I:0, S:0, N:0, T:0, F:0, J:0, P:0 } };
+    let state = { i: 0, scores: { E:0, I:0, S:0, N:0, T:0, F:0, J:0, P:0 }, history: [] };
 
     function renderQuestion() {
       const q = QUESTIONS[state.i];
       document.getElementById('qNumber').textContent = `${QUESTIONS.length}문항 중 ${state.i + 1}번`;
       document.getElementById('qText').textContent = q.q;
       document.getElementById('progressFill').style.width = `${(state.i / QUESTIONS.length) * 100}%`;
+      document.getElementById('backBtn').hidden = state.i === 0;
 
       const opts = document.getElementById('qOptions');
       opts.innerHTML = '';
@@ -614,6 +640,7 @@
 
     function choose(letter) {
       state.scores[letter] = (state.scores[letter] || 0) + 1;
+      state.history.push(letter);
       state.i++;
       if (state.i < QUESTIONS.length) {
         renderQuestion();
@@ -621,6 +648,14 @@
         document.getElementById('progressFill').style.width = '100%';
         setTimeout(showResult, 250);
       }
+    }
+
+    function goBack() {
+      if (state.i === 0) return;
+      state.i--;
+      const last = state.history.pop();
+      if (last) state.scores[last] = Math.max(0, (state.scores[last] || 0) - 1);
+      renderQuestion();
     }
 
     function computeType() {
@@ -644,7 +679,7 @@
     }
 
     function reset() {
-      state = { i: 0, scores: { E:0, I:0, S:0, N:0, T:0, F:0, J:0, P:0 } };
+      state = { i: 0, scores: { E:0, I:0, S:0, N:0, T:0, F:0, J:0, P:0 }, history: [] };
       renderQuestion();
       show('question');
     }
@@ -654,6 +689,7 @@
       show('question');
     });
     document.getElementById('retryBtn').addEventListener('click', reset);
+    document.getElementById('backBtn').addEventListener('click', goBack);
     // ---------- Share ----------
     const shareMenu = document.getElementById('shareMenu');
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
